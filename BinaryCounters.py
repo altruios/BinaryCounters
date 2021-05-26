@@ -93,6 +93,15 @@ class BinaryCounter:
           elif(functionName=="NOT"):
                self.binary=self.NOT(OBC.binary)
                self.conformRaw()
+          elif(functionName=="NAND"):
+               self.binary=self.NAND(OBC.binary)
+               self.conformRaw()
+          elif(functionName=="XNOR"):
+               self.binary=self.NOT(OBC.binary)
+               self.conformRaw()
+          elif(functionName=="NOR"):
+               self.binary=self.NOT(OBC.binary)
+               self.conformRaw()
           else:
                raise Exception("unknown operation, known operations are OR,XOR,AND,NOT")
      def _xorF(self,i1,i2):
@@ -101,6 +110,14 @@ class BinaryCounter:
           return i1|i2
      def _andf(self,i1,i2):
           return i1&i2
+     def _nandf(self,i1,i2):
+          if(i1 and i1): return 0
+          else:          return 1
+     def _xnorf(self,i1,i2):
+          return not i1==i2
+     def _norf(self,i1,i2):
+          if(not i1 and not i2):   return 1
+          else:                    return 0
      def _notf(self,i1,i2):
           if(i2>0):
                return 0
@@ -126,6 +143,19 @@ class BinaryCounter:
      def NOT(self,otherBinaryCounter):
           self.checkLength(otherBinaryCounter)
           return self._operateOnList(otherBinaryCounter,self._notf)
+     def NAND(self,otherBinaryCounter):
+          self.checkLength(otherBinaryCounter)
+          return self._operateOnList(otherBinaryCounter,self._nandf)
+     def XNOR(self,otherBinaryCounter):
+          self.checkLength(otherBinaryCounter)
+          return self._operateOnList(otherBinaryCounter,self._xnorf)
+     def NOR(self,otherBinaryCounter):
+          self.checkLength(otherBinaryCounter)
+          return self._operateOnList(otherBinaryCounter,self._norf)
+     
+
+
+
      def rangeBinaryOperation(self,otherBinaryCounter, arbitrayFunction):
           #other binCounter may be of different length;
           #arbitrayfunction MUST return 0,1, and assume zero or 1 inputs
@@ -150,20 +180,36 @@ if(__name__ == "__main__"):
           r2=random.random()
           if(r1>0.5):
                if(r2>0.5):
-                    bc1.BIT_OPERATION(bc2,"OR")
-                    print("bc1 OR bc2")
+                    if(r1>0.75):
+                         bc1.BIT_OPERATION(bc2,"OR")
+                         print("bc1 OR bc2")
+                    else:
+                         bc1.BIT_OPERATION(bc2,"NOR")
                else:
-                    bc1.BIT_OPERATION(bc2,"XOR")
-                    print("bc1 XOR bc2")
+                    if(r1>0.75):
+                         bc1.BIT_OPERATION(bc2,"XOR")
+                         print("bc1 XOR bc2")
+
+                    else:
+                         bc1.BIT_OPERATION(bc2,"NAND")
+                         print("bc1 NAND bc2")
 
           else:
                if(r2>0.5):
-                    bc2.BIT_OPERATION(bc1,"AND")
-                    print("bc2 AND bc1")
+                    if(r1<0.25):
+                         bc2.BIT_OPERATION(bc1,"AND")
+                         print("bc2 AND bc1")
+                    else:
+                         bc2.BIT_OPERATION(bc1,"XNOR")
+                         print("bc2 XNOR bc1")
 
                else:
-                    bc2.BIT_OPERATION(bc1,"NOT")
-                    print("bc2 NOT bc1")
+                    if(r1<0.25):
+                         bc2.BIT_OPERATION(bc1,"OR")
+                         print("bc2 OR bc1")
+                    else:
+                         bc2.BIT_OPERATION(bc1,"NOT")
+                         print("bc2 NOT bc1")
      def fuzzyZor(index,i,bit,b,lastValue):
           value = lastValue;
           newValue = ((bit+i)*(index*b+1))%2
