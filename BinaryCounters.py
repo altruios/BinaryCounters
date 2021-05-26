@@ -8,10 +8,11 @@ class BinaryCounter:
           self.binary = []
           self.rawNumber = startNum
           self.padd = padd
+          self.maximum = math.pow(2,self.padd)-1
+          print("self max",self.maximum)
+          print("\n\n\n\n") 
           self.conform()
-          self.max = math.pow(2,self.padd)-1
-          print("self max",self.max)
-          print("\n\n\n\n")
+
      def conform(self):
           self.binary = self.paddedBinary(self.rawNumber)
           self.conformRaw()
@@ -32,7 +33,7 @@ class BinaryCounter:
                while(len(digits)<=self.padd):
                     digits.append(1)   
           if(len(digits)==self.padd):
-               if(self.readBin(digits)>=self.max):
+               if(self.readBin(digits)>=self.maximum):
                     print("overflow x")
                     while(len(digits)>0):
                          digits.pop()
@@ -59,7 +60,7 @@ class BinaryCounter:
                rn//=2
           return digits[::-1]
      def increase(self,amount):
-          self.rawNumber= max(self.rawNumber+amount,self.max)
+          self.rawNumber= max(self.rawNumber+amount,self.maximum)
           self.conform()
      def decrease(self,amount):
           self.rawNumber=max(0,self.rawNumber-amount) 
@@ -71,12 +72,15 @@ class BinaryCounter:
      def setPad(self,pad):
           self.padd= pad
      def read(self):
-          print(f'binary:{self.binary} value:{self.rawNumber} bitLength: {self.padd} ',end="\n")
+          print(f'binary:{self.binary} value:{self.rawNumber} bitLength: {self.padd}: measured length:{len(self.binary)}  max val = {self.maximum}',end="\n")
      def conformRaw(self):
           newRaw = 0
           for index,bit in enumerate(self.binary):
                newRaw = newRaw + round(math.pow(2,self.padd-index) * bit)
-          print(f"new raw:{newRaw}, old raw:{self.rawNumber}", end="\n")
+          print(f"new raw:{newRaw}, old raw:{self.rawNumber} {self.maximum}", end="\n")
+          if(newRaw>self.maximum):
+               newRaw=self.maximum
+               self.binary=self.paddedBinary(newRaw)
           self.rawNumber=newRaw
      def BIT_OPERATION(self, OBC,functionName):
           if(functionName=="OR"):
