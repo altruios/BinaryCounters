@@ -15,7 +15,7 @@ class BinaryCounter:
 
      def conform(self):
           self.binary = self.paddedBinary(self.rawNumber)
-          self.conformRaw()
+          self.raw = self.conformRaw()
      def checkBinIsOverflow(self,digits):
           test =True;
           for bit in digits:
@@ -47,7 +47,7 @@ class BinaryCounter:
           result = 0;
           l = len(bin);
           for index,bit in enumerate(bin):
-               result = result + (bit*math.pow(2,l-index))
+               result = result + (bit*math.pow(2,l-index-1))
           return result
      def length(self):
           return len(self.binary)
@@ -60,7 +60,7 @@ class BinaryCounter:
                rn//=2
           return digits[::-1]
      def increase(self,amount):
-          self.rawNumber= max(self.rawNumber+amount,self.maximum)
+          self.rawNumber= min(self.rawNumber+amount,self.maximum)
           self.conform()
      def decrease(self,amount):
           self.rawNumber=max(0,self.rawNumber-amount) 
@@ -74,14 +74,12 @@ class BinaryCounter:
      def read(self):
           print(f'binary:{self.binary} value:{self.rawNumber} bitLength: {self.padd}: measured length:{len(self.binary)}  max val = {self.maximum}',end="\n")
      def conformRaw(self):
-          newRaw = 0
-          for index,bit in enumerate(self.binary):
-               newRaw = newRaw + round(math.pow(2,self.padd-index) * bit)
-          print(f"new raw:{newRaw}, old raw:{self.rawNumber} {self.maximum}", end="\n")
+          newRaw = self.readBin(self.binary)
           if(newRaw>self.maximum):
                newRaw=self.maximum
                self.binary=self.paddedBinary(newRaw)
           self.rawNumber=newRaw
+          return newRaw
      def BIT_OPERATION(self, OBC,functionName):
           if(functionName=="OR"):
                self.binary=self.OR(OBC.binary)
@@ -113,11 +111,8 @@ class BinaryCounter:
                raise Exception("bit's not equal");       
      def _operateOnList(self,otherBinaryCounter, fn):
           OperatedList=[] 
-          print(f"{otherBinaryCounter}debug")
-          print("operating on lists: bin, other bin:  ",self.binary,otherBinaryCounter)
           for i,bit in enumerate(otherBinaryCounter):
                OperatedList.append(fn(self.binary[i],bit))
-          print(f"returning {fn}'ed {OperatedList} opedList")
           return OperatedList
      def XOR(self, otherBinaryCounter):
           self.checkLength(otherBinaryCounter)
@@ -176,19 +171,27 @@ if(__name__ == "__main__"):
 
      for i in range(renderCountTest):
           print(f"i{i}")
-          print("\r", end="");
-          print("BC1 is:  ",end="");
-          BC1.read()
-          print("\n");
-          BC1.rangeBinaryOperation(BC3, fuzzyZor)
-          print("bc1 after:  ",end="")
-          BC1.read()
           PickRandomFunction(BC1,BC2);
-          print("bc1 after random function");
+          print("random function: \n")
           BC1.read()
-          print("bc2 afrer random function")
           BC2.read()
-          print("now xoring");
-          BC1.BIT_OPERATION(BC2,"XOR")
           BC1.increase(1)
-          BC3.increase(3)
+          BC2.increase(1)
+          print("\n\n")
+          print("READING AFTER INCREASE\n\n\n")
+          BC1.read()
+          BC2.read()
+          print("\n\n")
+          
+          
+          
+          
+          #print("now xoring");
+          #BC1.BIT_OPERATION(BC2,"OR")
+          #print(f"expect bc2 to be the same as last:",BC2.binary,BC2.rawNumber)
+          #BC2.BIT_OPERATION(BC1,"NOT")
+          #print(f"expect bc2 to be many zeros", BC2.binary, BC2.rawNumber)
+       #   BC1.increase(1)
+        #  BC3.increase(3)
+          #BC2.increase(20)
+          #print(f"expect bc2 to be val 20 exactly", BC2.binary,BC2.rawNumber)
