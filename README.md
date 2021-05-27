@@ -59,13 +59,7 @@
      BC1.BIT_OPERATION(BC2,"OR")
      BC1.read()#[0,1,1,0,0,0,1,1,0,1]
      BC2.read()#[0,1,1,0,0,0,1,1,0,0]
-     def randomFn(index,bit,b):
-          #honestly. just a random equation that spits out 0,1
-          newValue = ((bit+b)*(index*b+1))%2
-          return newValue
+     def randomFn(index,bit,b):#just a random equation that spits out 0,1
+          return ((bit+b)*(index*b+1))%2  
      BC3 = BinaryCounter(15,5) #[0,1,1,1,1]
      BC1.rangeBinaryOperation(BC3,randomFn) #[1,0,0,0,0,0,0,0,1,1]
-
-
-
-
