@@ -50,6 +50,15 @@
 * ##### binary may be a different length from the owner of this method
 * ##### this method iterates though and modifys its binary by running a fn on it, and the the matching index of the binary
 * ##### note that this wraps around the binary you supply, so it may be of any length.
+
+#### S_BIT_OP(\<BinaryCounter\>=binary, \<Function\>=fn):
+* ##### STATIONARY BIT OPERATION: there is no wrap lke in W_BIT_OP, if the binary you pass in has a smaller bitLength,  S_BIT_OP will operate from smallest significant digit to largest, and return the original binary when it runs of of the binary you pass in. 
+* ##### binary may be a different length from the owner of this method
+* ##### this method iterates though and modifys its binary by running a fn on it, and the the matching index of the binary
+* ##### note that this wraps around the binary you supply, so it may be of any length.
+
+
+
 * ###### notes on fn
 * * ######   it is a function you supply
 * * ######   it must return 0 or 1
@@ -78,9 +87,11 @@
      print(BC1.val()) #[1,0,0,0,0,0,0,0,1,1]
 
      #to have a smaller array act on a larger:
-     #use R_BIT_OP and access the logical function
+     #use W_BIT_OP and pass in the logical function
      #give it the binary (any array of bits)
-     BC1.R_BIT_OP(BC2, BC1.AND(BC3)) 
+     BC1.W_BIT_OP(BC3, OR) # OR these arrays together, and since BC3 is smaller, loop over until you cover all elements of BC1    
+     #use S_BIT_OP to 
+     BC1.S_BIT_OP(BC3, OR) # OR these arrays together, and since BC3 is smaller, so it returns BC1 partially unmodified    
 
 
 

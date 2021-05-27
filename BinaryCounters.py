@@ -93,14 +93,40 @@ class BC:
      def W_BIT_OP(self,otherBinaryCounter, arbitrayFunction):
           x=[]
           l=len(otherBinaryCounter.binary)
+          sl = self._length()-1
           for index,bit in enumerate(self.binary):
                pos = l-index-1
+               pos2= sl-index;
                wrappedPos = pos%l
+               i1 = self.binary[pos2]
                i2 = otherBinaryCounter.binary[wrappedPos]
-               value = arbitrayFunction(pos,bit,i2)
+               value = arbitrayFunction(pos,i1,i2)
                x.append(value)
           if(len(x)!=len(self.binary)):
                raise Exception("what the what?");
+          x.reverse()
+          print("\n\n",self.binary,"\n",otherBinaryCounter.binary,"\n", x,"\n\nself other x");
+          self.binary = x
+          self._conformRaw()
+     def S_BIT_OP(self,otherBinaryCounter, arbitrayFunction):
+          x=[]
+          l=len(otherBinaryCounter.binary)
+          sl = self._length()-1
+          for index,bit in enumerate(self.binary):
+               pos = l-index-1
+               pos2 = sl-index
+               if(pos>=0):
+                    i2 = otherBinaryCounter.binary[pos]
+                    i1 = self.binary[pos2]
+                    value = arbitrayFunction(pos,i1,i2)
+                    x.append(value)
+               else: #copy the original array
+
+                    value = self.binary[pos2]
+                    x.append(value)
+          if(len(x)!=len(self.binary)):
+               raise Exception("what the what?");
+          x.reverse()
           self.binary = x
           self._conformRaw()
      def READ(self):
@@ -142,7 +168,7 @@ if(__name__ == "__main__"):
      #tests
      BC1 = BC(0,10)
      BC2 = BC(10,10)
-     BC3 = BC(15,5)
+     BC3 = BC(1,5)
      BC1.READ()
      BC2.READ()
      BC3.READ()
@@ -152,17 +178,21 @@ if(__name__ == "__main__"):
      BC2.READ()
      BC1.BIT_OP(BC2,"OR")
      print("OR")
+
+     BC1.SET_BIT(1,5);
+     BC1.SET_BIT(1,6);
      BC1.READ()
      BC2.READ()
      def RFN(I,B1,B2):
           #honestly. just a random eqaution that spits out 0,1
           return ((I*B1+1)*(I*B2+1))%2
-     BC1.R_BIT_OP(BC3,RFN)
-
      print("range function")
      BC1.READ()
-     BC1.SET_BIT(1,9)
-     BC1.W_BIT_OP(BC3, OR)     
+     BC1.W_BIT_OP(BC3, AND)     
      BC1.READ()
-
+     BC3.READ()
+     print("was bc1 and 3");
+     BC1.S_BIT_OP(BC3, NOT)
+     BC1.READ()
+     BC3.READ()
 
