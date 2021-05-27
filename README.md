@@ -6,7 +6,10 @@
 * #### val is the starting value of the binary,
 * #### bitLength is the size of the array holding the binary.
 
-
+### FUNCTIONS:
+* ##### these are the logical gates - AND,NAND,OR,XOR,XNOR,NOR,NOT.
+* ##### they are included for convinence - and can be used anywhere an 'arbitray function' can be used (they fit the requirments of having the inputs i,bit1,bit2, and give a 0/1 as the output).
+* ##### note: these are not meant for anything other than binary, these are not meant to be called, but to be passed into a method as an argument.
 
 ### METHODS
 
@@ -42,15 +45,16 @@
 * ##### pos is goes from least significant digit to most
 * ##### pos is 0 based
   
-#### R_BIT_OP(\<BinaryCounter\>=binary, \<Function\>=fn):
-* binary may be a different length from the owner of this method
-* this method iterates though and modifys its binary by running a fn on it, and the the matching index of the binary
-* note that this wraps around the binary you supply, so it may be of any length.
-* ##### notes on fn
-* * #####   it is a function you supply
-* * #####   it must return 0 or 1
-* * #####   it's inputs are: (\<int\>=pos, \<int\>=bit1, \<int\>=bit2)
- * * * ###### pos begins at the least significant digit and move to the most significant digit in the array.
+#### W_BIT_OP(\<BinaryCounter\>=binary, \<Function\>=fn):
+* ##### WRAPPED BIT OPERATION: the second array is looped over if it is smaller than the method's owner
+* ##### binary may be a different length from the owner of this method
+* ##### this method iterates though and modifys its binary by running a fn on it, and the the matching index of the binary
+* ##### note that this wraps around the binary you supply, so it may be of any length.
+* ###### notes on fn
+* * ######   it is a function you supply
+* * ######   it must return 0 or 1
+* * ######   it's inputs are: (\<int\>=pos, \<int\>=bit1, \<int\>=bit2)
+ * * * ######  pos begins at the least significant digit and move to the most significant digit in the array.
  * * * ###### bit1 is the method owner's bit
  * * * ###### bit2 is the comparison bit. derived from pos % the length of the comparison array
 
@@ -72,3 +76,13 @@
      BC3 = BinaryCounter(15,5) #[0,1,1,1,1]
      BC1.R_BIT_OP(BC3,randomFn) 
      print(BC1.val()) #[1,0,0,0,0,0,0,0,1,1]
+
+     #to have a smaller array act on a larger:
+     #use R_BIT_OP and access the logical function
+     #give it the binary (any array of bits)
+     BC1.R_BIT_OP(BC2, BC1.AND(BC3)) 
+
+
+
+
+

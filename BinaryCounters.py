@@ -3,12 +3,25 @@ import random
 
 #python module for array based binary counters: 
 #work in progress
+def XOR(i,i1,i2):   return i1^i2
+def OR(i, i1,i2):   return i1|i2
+def AND(i,i1,i2):   return i1&i2
+def XNOR(i,i1,i2):  return not i1==i2
+def NAND(i,i1,i2):
+     if(i1 and i1): return 0
+     else:          return 1
+def NOR(i,i1,i2):
+     if(not i1 and not i2):   return 1
+     else:                    return 0
+def NOT(i,i1,i2):
+     if(i2>0): return 0
+     else:     return i1
 class BC:
      def __init__(self, startNum,padd):
           self.binary = []
-          self.rawNumber = startNum
-          self.padd = padd
-          self.maximum = math.pow(2,self.padd)-1
+          self.rawNumber = int(startNum)
+          self.padd = int(padd)
+          self.maximum = int(math.pow(2,self.padd)-1)
           self._conform()
      def _conform(self):
           self.binary = self._paddedBinary(self.rawNumber)
@@ -18,7 +31,7 @@ class BC:
           if(newRaw>self.maximum):
                newRaw=self.maximum
                self.binary=self._paddedBinary(newRaw)
-          self.rawNumber=newRaw
+          self.rawNumber=int(newRaw)
           return newRaw 
      def _isBinOverflow(self,digits):
           test =True;
@@ -44,62 +57,47 @@ class BC:
           return digits
      def _length(self): 
           return len(self.binary)
-     def _xorF(self,i1,i2):
-          return i1^i2
-     def _orf(self, i1,i2):
-          return i1|i2
-     def _andf(self,i1,i2):
-          return i1&i2
-     def _nandf(self,i1,i2):
-          if(i1 and i1): return 0
-          else:          return 1
-     def _xnorf(self,i1,i2):
-          return not i1==i2
-     def _norf(self,i1,i2):
-          if(not i1 and not i2):   return 1
-          else:                    return 0
-     def _notf(self,i1,i2):
-          if(i2>0): return 0
-          else:     return i1
      def _checkLength(self,otherBin):
           if(self._length()!=len(otherBin)):
                raise Exception("bit's not equal");       
      def _operateOnList(self,otherBinaryCounter, fn):
           OperatedList=[] 
           for i,bit in enumerate(otherBinaryCounter):
-               OperatedList.append(fn(self.binary[i],bit))
+               OperatedList.append(fn(i,self.binary[i],bit))
           return OperatedList
-     def _XOR(self, otherBinaryCounter):
-          return self._operateOnList(otherBinaryCounter,self._xorF)
-     def _AND(self,otherBinaryCounter):
-          return self._operateOnList(otherBinaryCounter,self._andf)
-     def _OR(self,otherBinaryCounter):
-          return self._operateOnList(otherBinaryCounter,self._orf)
-     def _NOT(self,otherBinaryCounter):
-          return self._operateOnList(otherBinaryCounter,self._notf)
-     def _NAND(self,otherBinaryCounter):
-          return self._operateOnList(otherBinaryCounter,self._nandf)
-     def _XNOR(self,otherBinaryCounter):
-          return self._operateOnList(otherBinaryCounter,self._xnorf)
-     def _NOR(self,otherBinaryCounter):
-          return self._operateOnList(otherBinaryCounter,self._norf)
+     def XOR(self, otherBinaryCounter):
+          return self._operateOnList(otherBinaryCounter.binary,XOR)
+     def AND(self,otherBinaryCounter):
+          return self._operateOnList(otherBinaryCounter.binary,AND)
+     def OR(self,otherBinaryCounter):
+          return self._operateOnList(otherBinaryCounter.binary,OR)
+     def NOT(self,otherBinaryCounter):
+          return self._operateOnList(otherBinaryCounter.binary,NOT)
+     def NAND(self,otherBinaryCounter):
+          return self._operateOnList(otherBinaryCounter.binary,NAND)
+     def XNOR(self,otherBinaryCounter):
+          return self._operateOnList(otherBinaryCounter.binary,XNOR)
+     def NOR(self,otherBinaryCounter):
+          return self._operateOnList(otherBinaryCounter.binary,NOR)
      def BIT_OP(self, OBC,functionName):
           self._checkLength(OBC.binary)
-          if(functionName=="OR"):       self.binary=self._OR(OBC.binary)
-          elif(functionName=="XOR"):    self.binary=self._XOR(OBC.binary)
-          elif(functionName=="AND"):    self.binary=self._AND(OBC.binary)
-          elif(functionName=="NOT"):    self.binary=self._NOT(OBC.binary)
-          elif(functionName=="NAND"):   self.binary=self._NAND(OBC.binary)
-          elif(functionName=="XNOR"):   self.binary=self._NOT(OBC.binary)
-          elif(functionName=="NOR"):    self.binary=self._NOR(OBC.binary)
+          if(functionName=="OR"):       self.binary=self.OR(OBC)
+          elif(functionName=="XOR"):    self.binary=self.XOR(OBC)
+          elif(functionName=="AND"):    self.binary=self.AND(OBC)
+          elif(functionName=="NOT"):    self.binary=self.NOT(OBC)
+          elif(functionName=="NAND"):   self.binary=self.NAND(OBC)
+          elif(functionName=="XNOR"):   self.binary=self.XNOR(OBC)
+          elif(functionName=="NOR"):    self.binary=self.NOR(OBC)
           else:                         raise Exception("unknown operation, known operations are OR,XOR,AND,NOT,NAND,XNOR,NOR")
           self._conformRaw()
-     def R_BIT_OP(self,otherBinaryCounter, arbitrayFunction):
+     def W_BIT_OP(self,otherBinaryCounter, arbitrayFunction):
           x=[]
           l=len(otherBinaryCounter.binary)
           for index,bit in enumerate(self.binary):
                pos = l-index-1
-               value = arbitrayFunction(pos,bit,otherBinaryCounter.binary[pos%l])
+               wrappedPos = pos%l
+               i2 = otherBinaryCounter.binary[wrappedPos]
+               value = arbitrayFunction(pos,bit,i2)
                x.append(value)
           if(len(x)!=len(self.binary)):
                raise Exception("what the what?");
@@ -163,5 +161,8 @@ if(__name__ == "__main__"):
 
      print("range function")
      BC1.READ()
-     BC1.SET_BIT(1,9)     
+     BC1.SET_BIT(1,9)
+     BC1.W_BIT_OP(BC3, OR)     
      BC1.READ()
+
+
