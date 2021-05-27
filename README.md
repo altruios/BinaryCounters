@@ -50,16 +50,17 @@
  ## example usage:
      BC1 = BinaryCounter(0,10)  
      BC2 = BinaryCounter(10,10)
-     BC1.read()#[0,0,0,0,0,0,0,0,0,0]  left if most significant digit, right is least
-     BC2.read()#[0,0,0,0,0,0,1,0,1,0]
+     print(BC1.val()) #[0,0,0,0,0,0,0,0,0,0]  left if most significant digit, right is least
+     print(BC2.val()) #[0,0,0,0,0,0,1,0,1,0]
      BC1.increase(1) 
      BC2.increase(386) 
-     BC1.read()#[0,0,0,0,0,0,0,0,0,1]
-     BC2.read()#[0,1,1,0,0,0,1,1,0,0]
+     print(BC1.val()) #[0,0,0,0,0,0,0,0,0,1]
+     print(BC2.val()) #[0,1,1,0,0,0,1,1,0,0]
      BC1.BIT_OPERATION(BC2,"OR")
-     BC1.read()#[0,1,1,0,0,0,1,1,0,1]
-     BC2.read()#[0,1,1,0,0,0,1,1,0,0]
+     print(BC1.val()) #[0,1,1,0,0,0,1,1,0,1]
+     print(BC2.val()) #[0,1,1,0,0,0,1,1,0,0]
      def randomFn(index,bit,b):#just a random equation that spits out 0,1
           return ((bit+b)*(index*b+1))%2  
      BC3 = BinaryCounter(15,5) #[0,1,1,1,1]
-     BC1.rangeBinaryOperation(BC3,randomFn) #[1,0,0,0,0,0,0,0,1,1]
+     BC1.rangeBinaryOperation(BC3,randomFn) 
+     print(BC1.val()) #[1,0,0,0,0,0,0,0,1,1]
