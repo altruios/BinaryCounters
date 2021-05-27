@@ -14,7 +14,7 @@ class BinaryCounter:
           self.binary = self._paddedBinary(self.rawNumber)
           self.raw = self._conformRaw()
      def _conformRaw(self):
-          newRaw = self.binToInt(self.binary)
+          newRaw = self.B_TO_I(self.binary)
           if(newRaw>self.maximum):
                newRaw=self.maximum
                self.binary=self._paddedBinary(newRaw)
@@ -29,7 +29,7 @@ class BinaryCounter:
                print(f"bin overflow!")
           return test;
      def _paddedBinary(self,rn):
-          digits = self.getBin(rn)
+          digits = self.GET_BIN_OF(rn)
           if(len(digits)> self.padd):
                print("overflow")
                while(len(digits)>0):
@@ -37,7 +37,7 @@ class BinaryCounter:
                while(len(digits)<=self.padd):
                     digits.append(1)   
           if(len(digits)==self.padd):
-               if(self.binToInt(digits)>=self.maximum):
+               if(self.B_TO_I(digits)>=self.maximum):
                     print("overflow x")
                     while(len(digits)>0):
                          digits.pop()
@@ -47,10 +47,8 @@ class BinaryCounter:
           while(len(digits)<self.padd):
                digits.insert(0,0)
           return digits
-     def _length(self):
+     def _length(self): 
           return len(self.binary)
-
-
      def _xorF(self,i1,i2):
           return i1^i2
      def _orf(self, i1,i2):
@@ -99,7 +97,7 @@ class BinaryCounter:
      def _NOR(self,otherBinaryCounter):
           self._checkLength(otherBinaryCounter)
           return self._operateOnList(otherBinaryCounter,self._norf)
-     def BIT_OPERATION(self, OBC,functionName):
+     def BIT_OP(self, OBC,functionName):
           if(functionName=="OR"):
                self.binary=self._OR(OBC.binary)
                self._conformRaw()
@@ -123,7 +121,7 @@ class BinaryCounter:
                self._conformRaw()
           else:
                raise Exception("unknown operation, known operations are OR,XOR,AND,NOT,NAND,XNOR,NOR")
-     def rangeBinaryOperation(self,otherBinaryCounter, arbitrayFunction):
+     def R_BIT_OP(self,otherBinaryCounter, arbitrayFunction):
           #other binCounter may be of different length;
           #arbitrayfunction MUST return 0,1, and assume zero or 1 inputs
           x=[]
@@ -136,25 +134,25 @@ class BinaryCounter:
                raise Exception("what the what?");
           self.binary = x
           self._conformRaw()
-     def read(self):
+     def READ(self):
           print(f'binary:{self.binary} value:{self.rawNumber}',end="\n")
-     def increase(self,amount):
+     def INCREASE(self,amount):
           self.rawNumber= min(self.rawNumber+amount,self.maximum)
           self._conform()
-     def decrease(self,amount):
+     def DECREASE(self,amount):
           self.rawNumber=max(0,self.rawNumber-amount) 
           self._conform()
-     def binToInt(self,bin):
+     def B_TO_I(self,bin):
           result = 0;
           l = len(bin);
           for index,bit in enumerate(bin):
                result = result + (bit*math.pow(2,l-index-1))
           return result
-     def setbitLen(self,pad):
+     def SET_BIT_LENGTH(self,pad):
           self.padd= pad
-     def val(self):
+     def VAL(self):
           return self.rawNumber
-     def getBin(self,rn):
+     def GET_BIN_OF(self,rn):
           if rn==0:
                return [0]
           digits = []
@@ -168,21 +166,21 @@ if(__name__ == "__main__"):
      BC1 = BinaryCounter(0,10)
      BC2 = BinaryCounter(10,10)
      BC3 = BinaryCounter(15,5)
-     BC1.read()
-     BC2.read()
-     BC3.read()
-     BC1.increase(1)
-     BC2.increase(386)
-     BC1.read()
-     BC2.read()
-     BC1.BIT_OPERATION(BC2,"OR")
+     BC1.READ()
+     BC2.READ()
+     BC3.READ()
+     BC1.INCREASE(1)
+     BC2.INCREASE(386)
+     BC1.READ()
+     BC2.READ()
+     BC1.BIT_OP(BC2,"OR")
      print("or")
-     BC1.read()
-     BC2.read()
+     BC1.READ()
+     BC2.READ()
      def randomFn(index,bit,b):
           #honestly. just a random eqaution that spits out 0,1
           newValue = ((bit+b)*(index*b+1))%2
           return newValue
-     BC1.rangeBinaryOperation(BC3,randomFn)
+     BC1.R_BIT_OP(BC3,randomFn)
      print("range function")
-     BC1.read()
+     BC1.READ()

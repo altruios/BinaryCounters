@@ -2,39 +2,44 @@
  an Array-based binary counter with functions designed for cellular automata experimentation
 
 # how to use:
+## BinaryCounter(\<int\>=val,\<int\>=bitLength)
+* #### val is the starting value of the binary,
+* #### bitLength is the size of the array holding the binary.
+
+
 
 ### METHODS
 
-#### BIT_OPERATION( \<BinaryCounter\>=binary, \<str\>=operator):
+#### BIT_OP( \<BinaryCounter\>=binary, \<str\>=operator):
 * ##### operator options are = "XOR","OR","AND","NAND,"XNOR","NOR","NOT"
 * ##### binary must be the same length as owner of method.
  
-#### increase(\<int\>=amount):
+#### INCREASE(\<int\>=amount):
 * ##### amount must be a positive integer, or results in no change
 * ##### amount will not increase set bits, it will max at all 1's
 
-#### decrease(\<int\>=amount):
+#### DECREASE(\<int\>=amount):
 * ##### amount must be a positive integer, or results in no change
 * ##### amount will not wrap around in value, it will end at all 0's
  
-#### read():
+#### READ():
 * ##### prints a status in the console
 
-#### setbitLen(\<int\>=len):
+#### SET_BIT_LENGTH(\<int\>=len):
 * #####  len sets the length of the array holding the bits.
 
-#### binToIn(\<int\>[]=bin):
+#### B_TO_I(\<int\>[]=bin):
 * #####  bin is an array of binary numbers (or any numbers), such as \<BinaryCounter\>.binary
   
-#### val():
+#### VAL():
 * ##### returns value of binary
 
-#### getThisBin(\<int\>=b):
+#### GET_BIN_OF(\<int\>=b):
 * ##### b is calculated into an array of zero's and one's that represent it's binary, with a leading significant digit
 
 
   
-#### rangeBinaryOperation(\<BinaryCounter\>=binary, \<Function\>=fn):
+#### R_BIT_OP(\<BinaryCounter\>=binary, \<Function\>=fn):
 * binary may be a different length from the owner of this method
 * this method iterates though and modifys its binary by running a fn on it, and the the matching index of the binary
 * note that this wraps around the binary you supply, so it may be of any length.
@@ -56,11 +61,11 @@
      BC2.increase(386) 
      print(BC1.val()) #[0,0,0,0,0,0,0,0,0,1]
      print(BC2.val()) #[0,1,1,0,0,0,1,1,0,0]
-     BC1.BIT_OPERATION(BC2,"OR")
+     BC1.BIT_OP(BC2,"OR")
      print(BC1.val()) #[0,1,1,0,0,0,1,1,0,1]
      print(BC2.val()) #[0,1,1,0,0,0,1,1,0,0]
      def randomFn(index,bit,b):#just a random equation that spits out 0,1
           return ((bit+b)*(index*b+1))%2  
      BC3 = BinaryCounter(15,5) #[0,1,1,1,1]
-     BC1.rangeBinaryOperation(BC3,randomFn) 
+     BC1.R_BIT_OP(BC3,randomFn) 
      print(BC1.val()) #[1,0,0,0,0,0,0,0,1,1]
