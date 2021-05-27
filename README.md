@@ -50,7 +50,7 @@
  ## example usage:
      BC1 = BinaryCounter(0,10)  
      BC2 = BinaryCounter(10,10)
-     BC1.read()#[0,0,0,0,0,0,0,0,0,0]  left if most significant digit, right if least
+     BC1.read()#[0,0,0,0,0,0,0,0,0,0]  left if most significant digit, right is least
      BC2.read()#[0,0,0,0,0,0,1,0,1,0]
      BC1.increase(1) 
      BC2.increase(386) 
