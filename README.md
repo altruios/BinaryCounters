@@ -37,7 +37,10 @@
 #### GET_BIN_OF(\<int\>=b):
 * ##### b is calculated into an array of zero's and one's that represent it's binary, with a leading significant digit
 
-
+#### SET_BIT(\<int\>=val,\<int\>=pos)
+* ##### val is 1/0,
+* ##### pos is goes from least significant digit to most
+* ##### pos is 0 based
   
 #### R_BIT_OP(\<BinaryCounter\>=binary, \<Function\>=fn):
 * binary may be a different length from the owner of this method

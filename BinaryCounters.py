@@ -130,6 +130,16 @@ class BC:
                digits.append(int(rn%2))
                rn//=2
           return digits[::-1]
+     def SET_BIT(self,bitVal,pos):
+          try:
+               l=self._length()
+               index = l-pos-1
+               if(index<0 or index>l):
+                    raise Exception("out of bounds")     
+               self.binary[index]=bitVal
+          except Exception as e:
+               print("excepted", e)
+
 if(__name__ == "__main__"):
      #tests
      BC1 = BC(0,10)
@@ -150,5 +160,8 @@ if(__name__ == "__main__"):
           #honestly. just a random eqaution that spits out 0,1
           return ((I*B1+1)*(I*B2+1))%2
      BC1.R_BIT_OP(BC3,RFN)
+
      print("range function")
+     BC1.READ()
+     BC1.SET_BIT(1,9)     
      BC1.READ()
