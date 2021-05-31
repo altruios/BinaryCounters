@@ -1,6 +1,6 @@
 import math
 import random
-
+import numpy as np
 #python module for array based binary counters: 
 #work in progress
 def XOR(i,i1,i2):   return i1^i2
@@ -18,10 +18,12 @@ def NOT(i,i1,i2):
      else:     return i1
 class BC:
      def __init__(self, startNum,padd):
+          if(startNum<0 or padd<0):
+               raise Exception("bad inputs")
           self.binary = []
           self.rawNumber = int(startNum)
           self.padd = int(padd)
-          self.maximum = int(math.pow(2,self.padd)-1)
+          self.maximum = ((2**self.padd)-1)
           self._conform()
      def _conform(self):
           self.binary = self._paddedBinary(self.rawNumber)
@@ -59,7 +61,9 @@ class BC:
           return len(self.binary)
      def _checkLength(self,otherBin):
           if(self._length()!=len(otherBin)):
-               raise Exception("bit's not equal");       
+               raise Exception("bit's not equal");   
+
+    
      def _operateOnList(self,otherBinaryCounter, fn):
           OperatedList=[] 
           for i,bit in enumerate(otherBinaryCounter):
@@ -105,7 +109,6 @@ class BC:
           if(len(x)!=len(self.binary)):
                raise Exception("what the what?");
           x.reverse()
-          print("\n\n",self.binary,"\n",otherBinaryCounter.binary,"\n", x,"\n\nself other x");
           self.binary = x
           self._conformRaw()
      def S_BIT_OP(self,otherBinaryCounter, arbitrayFunction):
@@ -141,7 +144,9 @@ class BC:
           result = 0;
           l = len(bin);
           for index,bit in enumerate(bin):
-               result = result + (bit*math.pow(2,l-index-1))
+               position = l-index-1
+               tarBit = bin[position]
+               result = result + (tarBit*(2**index))
           return result
      def SET_BIT_LENGTH(self,pad):
           self.padd= pad
@@ -154,6 +159,8 @@ class BC:
                digits.append(int(rn%2))
                rn//=2
           return digits[::-1]
+     def BIN(self):
+          return self.binary
      def SET_BIT(self,bitVal,pos):
           try:
                l=self._length()
@@ -163,36 +170,55 @@ class BC:
                self.binary[index]=bitVal
           except Exception as e:
                print("excepted", e)
-
+               print("did not set anything")
+     def SET_V(self,val):
+          self.rawNumber=max(self.maximum,val);
+          self._conform()
+     def SHIFT_UP(self,val):
+          self.rawNumber=self.rawNumber<<val
+          self._conform()
+     def SHIFT_DOWN(self,val):
+          self.rawNumber=self.rawNumber>>val
+          self._conform()
+     def SHIFT_CIRCLE_F(self,amount):
+          for i in range(amount):
+               bit = self.binary.pop()
+               self.binary.insert(0,bit)
+          self._conformRaw()
+     def SHIFT_CIRCLE_R(self,amount):
+          for i in range(amount):
+               bit = self.binary.pop(0)
+               self.binary.append(bit)
+          self._conformRaw()
+     def COUNT(self, willCountOnes):
+          c=0
+          if(willCountOnes):  c = self.binary.count(1)
+          else:               c = self.binary.count(0)
+          return c
+     def KEEP_ODD(self,increaseBool):
+          if(self.binary[len(self.binary)-1]!=1):
+               if(increaseBool):   self.INCREASE(1)
+               else:               self.DECREASE(1)
+     def KEEP_EVEN(self,increaseBool):
+          if(self.binary[len(self.binary)-1]!=0):
+               if(increaseBool):   self.INCREASE(1)
+               else:               self.DECREASE(1)
+     def SORT_B(self,bFromSignificantDigit):
+          if(bFromSignificantDigit):
+               self.binary.sort(reverse=True)
+          else:
+               self.binary.sort()
+          self._conformRaw()
+     def SECTION(self,start,stop):
+          return self.binary[start:stop]
+     def SPAWN(self,start,stop):
+          section = self.SECTION(start,stop);
+          sB = self.B_TO_I(section);
+          l=len(section)
+          return BC(sB,l)
 if(__name__ == "__main__"):
      #tests
-     BC1 = BC(0,10)
-     BC2 = BC(10,10)
-     BC3 = BC(1,5)
+     BC1 = BC(0,1080)
+     BC1.READ();
+     BC1.INCREASE(20)
      BC1.READ()
-     BC2.READ()
-     BC3.READ()
-     BC1.INCREASE(1)
-     BC2.INCREASE(386)
-     BC1.READ()
-     BC2.READ()
-     BC1.BIT_OP(BC2,"OR")
-     print("OR")
-
-     BC1.SET_BIT(1,5);
-     BC1.SET_BIT(1,6);
-     BC1.READ()
-     BC2.READ()
-     def RFN(I,B1,B2):
-          #honestly. just a random eqaution that spits out 0,1
-          return ((I*B1+1)*(I*B2+1))%2
-     print("range function")
-     BC1.READ()
-     BC1.W_BIT_OP(BC3, AND)     
-     BC1.READ()
-     BC3.READ()
-     print("was bc1 and 3");
-     BC1.S_BIT_OP(BC3, NOT)
-     BC1.READ()
-     BC3.READ()
-

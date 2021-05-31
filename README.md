@@ -13,6 +13,46 @@
 
 ### METHODS
 
+#### KEEP_EVEN(\<bool\>=increaseBool):
+* ##### increase bool determines if number increases or decreases
+* ##### forces an even number by shifting value by 1
+ 
+#### KEEP_ODD(\<bool\>=increaseBool):
+* ##### increase bool determines if number increases or decreases
+* ##### forces an even number by shifting value by 1
+
+#### SORT_B(\<bool\>=fromSig):
+* ##### fromSig if true, sorts all 1's to the most significant digit
+* ##### sorts the binary
+
+#### SECTION(\<int\>=start,\<int\>=stop):
+* ##### returns a new array of that section of binary
+
+#### SPAWN(\<int\>=start,\<int\>=stop):
+* ##### returns a new \<BinaryCounter\> from that section of binary
+
+#### COUNT(\<bool\>=willCountOnes):
+* ##### willCountOnes if true,  this function will return number of 1's, otherwise it will return the number of 0's 
+
+#### SHIFT_UP( \<int\>=amount):
+* ##### logically shifts binary \<\< up
+
+#### SHIFT_DOWN( \<int\>=amount):
+* ##### logically shifts binary \>\> down
+
+
+
+
+
+#### SHIFT_CIRCLE_F( \<int\>=amount):
+* ##### rotates the binary by an amount = 1: (0,0,0,1)=>(1,0,0,0) amount = 2: (0,0,0,1)=>(0,1,0,0)
+
+
+#### SHIFT_CIRCLE_R( \<int\>=amount):
+* ##### rotates the binary by an amount = 1: (1,1,0,1)=>(1,0,1,1) amount = 2: (1,1,1,0)=>(1,0,1,1) 
+
+
+
 #### BIT_OP( \<BinaryCounter\>=binary, \<str\>=operator):
 * ##### operator options are = "XOR","OR","AND","NAND,"XNOR","NOR","NOT"
 * ##### binary must be the same length as owner of method.
@@ -36,6 +76,12 @@
   
 #### VAL():
 * ##### returns value of binary
+
+#### BIN():
+* ##### returns array that represents binary
+  
+#### SET_V(\<int\>=value):
+* ##### sets value of binary
 
 #### GET_BIN_OF(\<int\>=b):
 * ##### b is calculated into an array of zero's and one's that represent it's binary, with a leading significant digit
