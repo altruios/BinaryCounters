@@ -73,7 +73,8 @@
 
 #### B_TO_I(\<int\>[]=bin):
 * #####  bin is an array of binary numbers (or any numbers), such as \<BinaryCounter\>.binary
-  
+* ##### returns an int
+
 #### VAL():
 * ##### returns value of binary
 
