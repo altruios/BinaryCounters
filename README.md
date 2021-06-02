@@ -1,6 +1,13 @@
 # BinaryCounters
  an Array-based binary counter with functions designed for cellular automata experimentation
 
+# INSTALL INSTRUCTION
+```
+pip install BinaryCounters
+```
+
+
+
 # how to use:
 ## BinaryCounter(\<int\>=val,\<int\>=bitLength)
 * #### val is the starting value of the binary,
@@ -40,18 +47,11 @@
 #### SHIFT_DOWN( \<int\>=amount):
 * ##### logically shifts binary \>\> down
 
-
-
-
-
-#### SHIFT_CIRCLE_F( \<int\>=amount):
+#### SHIFT_CIRCLE( \<int\>=amount, \<bool\>=dir):
+* ##### dir determines rotational direction. If True:
 * ##### rotates the binary by an amount = 1: (0,0,0,1)=>(1,0,0,0) amount = 2: (0,0,0,1)=>(0,1,0,0)
-
-
-#### SHIFT_CIRCLE_R( \<int\>=amount):
+* ##### If False:
 * ##### rotates the binary by an amount = 1: (1,1,0,1)=>(1,0,1,1) amount = 2: (1,1,1,0)=>(1,0,1,1) 
-
-
 
 #### BIT_OP( \<BinaryCounter\>=binary, \<str\>=operator):
 * ##### operator options are = "XOR","OR","AND","NAND,"XNOR","NOR","NOT"
@@ -65,8 +65,17 @@
 * ##### amount must be a positive integer, or results in no change
 * ##### amount will not wrap around in value, it will end at all 0's
  
+#### COUNT(\<bool\>=countOnes):
+* ##### if countOnes: count 1's in binary, else count 0's 
+
 #### READ():
 * ##### prints a status in the console
+
+#### SIZE():
+* ##### returns the length of the binary array
+
+#### GET_MAX():
+* ##### returns the maximum int value based on size of array.
 
 #### SET_BIT_LENGTH(\<int\>=len):
 * #####  len sets the length of the array holding the bits.
