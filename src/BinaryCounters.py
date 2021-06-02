@@ -1,12 +1,13 @@
-import math
-import random
-import numpy as np
+#import numpy as np //to be implemented to speed increase :)
 #python module for array based binary counters: 
 #work in progress
+import random
 def XOR(i,i1,i2):   return i1^i2
 def OR(i, i1,i2):   return i1|i2
 def AND(i,i1,i2):   return i1&i2
-def XNOR(i,i1,i2):  return not i1==i2
+def XNOR(i,i1,i2):  
+     if not i1==i2: return 1
+     else: return 0
 def NAND(i,i1,i2):
      if(i1 and i1): return 0
      else:          return 1
@@ -18,8 +19,27 @@ def NOT(i,i1,i2):
      else:     return i1
 class BC:
      def __init__(self, startNum,padd):
-          if(startNum<0 or padd<0):
-               raise Exception("bad inputs")
+          safeStart =0
+          safePadd=1
+          if(isinstance(startNum,str)):
+               startNum=0
+          if(isinstance(padd, str)):
+               padd=1
+          if((not isinstance(startNum,int))): 
+               if(isinstance(startNum,float)):    
+                    try:      safeStart=int(startNum)
+                    except:   safeStart=0
+               else:          safeStart=0
+          else:               safeStart=startNum
+          if(not isinstance(padd,int)):
+               if(isinstance(padd,float)):       
+                    try:      safePadd=int(padd) 
+                    except:   safePadd=1
+               else:          safePadd=padd
+          if(safeStart<0):    self.rawNumber=0
+          else:               self.rawNumber=safeStart
+          if(safePadd<1):     self.padd=1
+          else:               self.padd=safePadd
           self.binary = []
           self.rawNumber = int(startNum)
           self.padd = int(padd)
@@ -150,6 +170,7 @@ class BC:
           return result
      def SET_BIT_LENGTH(self,pad):
           self.padd= pad
+          self._conform()
      def VAL(self):
           return self.rawNumber
      def GET_BIN_OF(self,rn):
@@ -168,11 +189,13 @@ class BC:
                if(index<0 or index>l):
                     raise Exception("out of bounds")     
                self.binary[index]=bitVal
+               self._conformRaw()
           except Exception as e:
                print("excepted", e)
                print("did not set anything")
+
      def SET_V(self,val):
-          self.rawNumber=max(self.maximum,val);
+          self.rawNumber=max(min(self.maximum,val),0);
           self._conform()
      def SHIFT_UP(self,val):
           self.rawNumber=self.rawNumber<<val
@@ -216,9 +239,67 @@ class BC:
           sB = self.B_TO_I(section);
           l=len(section)
           return BC(sB,l)
+     def GET_MAX(self):
+          return self.maximum
 if(__name__ == "__main__"):
      #tests
-     BC1 = BC(0,1080)
-     BC1.READ();
-     BC1.INCREASE(20)
-     BC1.READ()
+     class TestBinaryCounter:
+          def test_1_overflow(self):
+               for i in range(1_000):
+                    bin=BC(i,i)
+                    bin.SET_V(bin.GET_MAX())
+                    a=bin.VAL()
+                    bin.INCREASE(1)
+                    assert a==bin.VAL()
+          def test_2_overflow_infinity(self):
+               for i in range(1_000):
+                    bin=BC(i,i)
+                    bin.SET_V(bin.GET_MAX())
+                    a=bin.VAL()
+                    bin.INCREASE(float('inf'))
+                    assert a==bin.VAL()
+          def test_3_overflow_negative(self):
+               for i in range(1_000):
+                    bin = BC(0,i)
+                    bin.DECREASE(i)
+                    assert bin.VAL()==0
+          def test_4_overflow_negative_infinity(self):
+               for i in range(1_000):
+                    bin = BC(0,i)
+                    bin.DECREASE(float('inf'))
+                    assert bin.VAL()==0
+          def test_5_bad_input_text(self):
+               stringNumbers = ["1","2","3","4","5","6","7","8","9","10","-1","-20","-0.311111","-.343,fa","hello world","three","THREE","0",""]
+               for i in range(1_000):
+                    bin=BC(stringNumbers[(i%len(stringNumbers))],i)
+                    assert bin.VAL()==0;
+          def test_6_method_COUNT(self):
+               bin1=BC(15,6)
+               bin2=BC(15,12)
+               bin3=BC(31,8)
+               bin4=BC(63,16)
+               assert bin1.COUNT(True)==4
+               assert bin1.COUNT(False)==2
+               assert bin2.COUNT(True)==4
+               assert bin2.COUNT(False)==8
+               assert bin3.COUNT(True)==5
+               assert bin3.COUNT(False)==3
+               assert bin4.COUNT(True)==6
+               assert bin4.COUNT(False)==10
+          def test_7_method_VAL(self):
+               for i in range(1_000):
+                    x = int(round(random.random()*1000))
+                    bin = BC(x*i,i+10);
+                    assert bin.VAL() == (x*i)
+
+
+     t = TestBinaryCounter()
+     print("testing");
+     t.test_1_overflow()
+     t.test_2_overflow_infinity()
+     t.test_3_overflow_negative()
+     t.test_4_overflow_negative_infinity()
+     t.test_5_bad_input_text()
+     t.test_6_method_COUNT()
+     t.test_7_method_VAL()
+     print("tested:YAY!")
