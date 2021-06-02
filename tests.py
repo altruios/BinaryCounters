@@ -1,11 +1,20 @@
 import BinaryCounters as BAC
 from PIL import Image
 import numpy as np
+import pytest
 import os
 import time
 import math
 import random
 BC= BAC.BC
+OR=BAC.OR
+XOR=BAC.XOR
+AND=BAC.AND
+XNOR=BAC.XNOR
+NAND=BAC.NAND
+NOR=BAC.NOR
+NOT=BAC.NOT
+
 class TestBinaryCounter:
      def test_1_overflow(self):
           for i in range(100):
@@ -123,17 +132,61 @@ class TestBinaryCounter:
           bin1.SET_V(c)
           assert bin1.VAL()==0
      def test_15_method_SHIFT_UP(self):
-          pass
-     
+          posTest1 = 1
+          posTest2=40
+          posTest3=-5
+          posTest4="4"
+          posTest5=[0,0]        
+          bc1=BC(1,10)     
+          bc1.SHIFT_UP(posTest1)
+          assert bc1.VAL()==2   
+          bc1.SHIFT_UP(posTest2)
+          assert bc1.VAL()==bc1.GET_MAX()  
+          with pytest.raises(Exception) as exc:
+               bc1.SHIFT_DOWN(posTest3)
+          assert "negative input not allowed" in str(exc.value)
+         
+          with pytest.raises(Exception) as exc:
+               bc1.SHIFT_UP(posTest4)
+          assert "bad input: use integers" in str(exc.value)
+          with pytest.raises(Exception) as exc:
+               bc1.SHIFT_UP(posTest5)
+          assert "bad input: use integers" in str(exc.value)
      def test_16_method_SHIFT_DOWN(self):
-          pass
-     
-     def test_17_method_SHIFT_CIRCLE_F(self):
-          pass
-     
-     def test_18_method_SHIFT_CIRCLE_R(self):
-          pass
-     
+          posTest1 = 1
+          posTest2=40
+          posTest3=-5
+          posTest4="4"
+          posTest5=[0,0]
+                  
+          bc1=BC(63,10)     
+          bc1.SHIFT_DOWN(posTest1)
+          assert bc1.VAL()==31   
+          
+          bc1.SHIFT_DOWN(posTest2)
+          assert bc1.VAL()==0  
+          
+          with pytest.raises(Exception) as exc:
+               bc1.SHIFT_DOWN(posTest3)
+          assert "negative input not allowed" in str(exc.value)
+          with pytest.raises(Exception) as exc:
+               bc1.SHIFT_DOWN(posTest4)
+          assert "bad input: use integers" in str(exc.value)
+          with pytest.raises(Exception) as exc:
+               bc1.SHIFT_DOWN(posTest5)
+          assert "bad input: use integers" in str(exc.value)
+     def test_17_method_SHIFT_CIRCLE(self):
+          bc1=BC(15,10)
+          bc1.SHIFT_CIRCLE(1,True)
+          assert bc1.VAL()==519
+          bc1.SHIFT_CIRCLE(1,False)
+          assert bc1.VAL()==15
+          bc1.SHIFT_CIRCLE(4,False)
+          print(bc1.VAL())
+          assert bc1.VAL()==240
+     def test_18_method_READ(self):
+          bc1=BC(10,10);
+          assert  bc1.READ() ==(f'binary:{bc1.binary} value:{bc1.rawNumber}\n')
      def test_19_method_KEEP_ODD(self):
           bc1 = BC(2,10)
           bc1.KEEP_ODD(False)
@@ -197,9 +250,37 @@ class TestBinaryCounter:
           r = bin1.B_TO_I(binary)     
           assert r==15
      def test_29_method_S_BIT_OP(self):
-          pass
+          logicalFunctions = [OR,XOR,AND,NOR,NOT,NAND,XNOR]
+          results = []
+          for fn in logicalFunctions:
+               bc1=BC(0,10)
+               bc2=BC(6,5)
+               bc1.S_BIT_OP(bc2,fn)
+               results.append(bc1.BIN())
+          print(results)
+          assert results[0]==[0,0,0,0,0,0,0,1,1,0]
+          assert results[1]==[0,0,0,0,0,0,0,1,1,0]
+          assert results[2]==[0,0,0,0,0,0,0,0,0,0]
+          assert results[3]==[0,0,0,0,0,1,1,0,0,1]
+          assert results[4]==[0,0,0,0,0,0,0,0,0,0]
+          assert results[5]==[0,0,0,0,0,1,1,1,1,1]
+          assert results[6]==[0,0,0,0,0,0,0,1,1,0]        
      def test_30_method_W_BIT_OP(self):
-          pass     
+          logicalFunctions = [OR,XOR,AND,NOR,NOT,NAND,XNOR]
+          results = []
+          for fn in logicalFunctions:
+               bc1=BC(0,10)
+               bc2=BC(6,5)
+               bc1.W_BIT_OP(bc2,fn)
+               results.append(bc1.BIN())
+          print(results)
+          assert results[0]==[0,0,1,1,0,0,0,1,1,0]
+          assert results[1]==[0,0,1,1,0,0,0,1,1,0]
+          assert results[2]==[0,0,0,0,0,0,0,0,0,0]
+          assert results[3]==[1,1,0,0,1,1,1,0,0,1]
+          assert results[4]==[0,0,0,0,0,0,0,0,0,0]
+          assert results[5]==[1,1,1,1,1,1,1,1,1,1]
+          assert results[6]==[0,0,1,1,0,0,0,1,1,0]             
      def test_31_method_BIT_OP(self):
           ops = ["OR","XOR","AND","NOT","NAND","XNOR","NOR"]
           results=[]

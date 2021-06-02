@@ -153,7 +153,7 @@ class BC:
           self.binary = x
           self._conformRaw()
      def READ(self):
-          print(f'binary:{self.binary} value:{self.rawNumber}',end="\n")
+          return (f'binary:{self.binary} value:{self.rawNumber}\n')
      def INCREASE(self,amount):
           self.rawNumber= min(self.rawNumber+amount,self.maximum)
           self._conform()
@@ -198,20 +198,45 @@ class BC:
           self.rawNumber=max(min(self.maximum,val),0);
           self._conform()
      def SHIFT_UP(self,val):
-          self.rawNumber=self.rawNumber<<val
+          last = self.rawNumber
+          if(isinstance(val,int)):
+               if(val>0):
+                    try: self.rawNumber=self.rawNumber<<val
+                    except: self.rawNumber=last
+               else:
+                    print(val)
+                    raise Exception("negative input not allowed")
+          else:
+               raise Exception("bad input: use integers")
+          if(self.rawNumber<0):
+               self.rawNumber=0
+          if(self.rawNumber>self.GET_MAX()):
+               self.rawNumber=self.GET_MAX()
           self._conform()
      def SHIFT_DOWN(self,val):
-          self.rawNumber=self.rawNumber>>val
+          last = self.rawNumber
+          if(isinstance(val,int)):
+               if(val>0):
+                    try: self.rawNumber=self.rawNumber>>val
+                    except: self.rawNumber=last
+               else:
+                    raise Exception("negative input not allowed")
+          else:
+               raise Exception("bad input: use integers")
+          if(self.rawNumber<0):
+               self.rawNumber=0
+          if(self.rawNumber>self.GET_MAX()):
+               self.rawNumber=self.GET_MAX()
           self._conform()
-     def SHIFT_CIRCLE_F(self,amount):
-          for i in range(amount):
-               bit = self.binary.pop()
-               self.binary.insert(0,bit)
-          self._conformRaw()
-     def SHIFT_CIRCLE_R(self,amount):
-          for i in range(amount):
-               bit = self.binary.pop(0)
-               self.binary.append(bit)
+     def SHIFT_CIRCLE(self,amount,bGoForward):
+          if(bGoForward):
+               for i in range(amount):
+                    bit = self.binary.pop()
+                    self.binary.insert(0,bit)
+          else:
+               for i in range(amount):
+                    bit = self.binary.pop(0)
+                    self.binary.append(bit)
           self._conformRaw()
      def COUNT(self, willCountOnes):
           c=0
