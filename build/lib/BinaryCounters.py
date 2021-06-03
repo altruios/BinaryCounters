@@ -19,6 +19,7 @@ def NOT(i,i1,i2):
      else:     return i1
 class BC:
      def __init__(self, startNum,padd):
+          self._className="_BinaryCounter"
           safeStart =0
           safePadd=1
           if(isinstance(startNum,str)):
@@ -35,7 +36,8 @@ class BC:
                if(isinstance(padd,float)):       
                     try:      safePadd=int(padd) 
                     except:   safePadd=1
-               else:          safePadd=padd
+               else:          safePadd=1
+          else:               safePadd=padd
           if(safeStart<0):    self.rawNumber=0
           else:               self.rawNumber=safeStart
           if(safePadd<1):     self.padd=1
@@ -82,8 +84,19 @@ class BC:
      def _checkLength(self,otherBin):
           if(self._length()!=len(otherBin)):
                raise Exception("bit's not equal");   
-
-    
+     def _check_input_bool(self,test):
+          if(isinstance(test, bool)):return True
+          else: raise Exception(f"bad input: use bool only: this is not a bool: {test}")
+     def _check_input_int(self,test):
+          if(isinstance(test, int)):return True
+          else: raise Exception(f"bad input: use int only: this is not a integer: {test}")
+     def _check_input_str(self,test):
+          if(isinstance(test, str)):return True
+          else: raise Exception(f"bad input: use str only: this is not a string: {test}")
+     def _check_input_bc(self,test):
+          if(hasattr(test, '_className')): 
+               if(test._className=="_BinaryCounter"): return True 
+          raise Exception(f"bad input: use BC only: this is not a BinaryCounter: {test}")
      def _operateOnList(self,otherBinaryCounter, fn):
           OperatedList=[] 
           for i,bit in enumerate(otherBinaryCounter):
@@ -104,6 +117,11 @@ class BC:
      def NOR(self,otherBinaryCounter):
           return self._operateOnList(otherBinaryCounter.binary,NOR)
      def BIT_OP(self, OBC,functionName):
+          self._check_input_bc(OBC)
+          if(self._check_input_bc(OBC)):
+               print(f"succeeded:{OBC}")
+          else:
+               print("failed? how get here?")
           self._checkLength(OBC.binary)
           if(functionName=="OR"):       self.binary=self.OR(OBC)
           elif(functionName=="XOR"):    self.binary=self.XOR(OBC)
@@ -115,6 +133,7 @@ class BC:
           else:                         raise Exception("unknown operation, known operations are OR,XOR,AND,NOT,NAND,XNOR,NOR")
           self._conformRaw()
      def W_BIT_OP(self,otherBinaryCounter, arbitrayFunction):
+          self._check_input_bc(otherBinaryCounter)
           x=[]
           l=len(otherBinaryCounter.binary)
           sl = self._length()-1
@@ -155,9 +174,11 @@ class BC:
      def READ(self):
           return (f'binary:{self.binary} value:{self.rawNumber}\n')
      def INCREASE(self,amount):
+          self._check_input_int(amount)
           self.rawNumber= min(self.rawNumber+amount,self.maximum)
           self._conform()
      def DECREASE(self,amount):
+          self._check_input_int(amount)
           self.rawNumber=max(0,self.rawNumber-amount) 
           self._conform()
      def B_TO_I(self,bin):
@@ -169,6 +190,8 @@ class BC:
                result = result + (tarBit*(2**index))
           return result
      def SET_BIT_LENGTH(self,pad):
+          self._check_input_int(pad)
+          if(pad<1): pad=1
           self.padd= pad
           self._conform()
      def VAL(self):
@@ -183,6 +206,8 @@ class BC:
      def BIN(self):
           return self.binary
      def SET_BIT(self,bitVal,pos):
+          self._check_input_int(bitVal)
+          self._check_input_int(pos)
           try:
                l=self._length()
                index = l-pos-1
@@ -193,21 +218,19 @@ class BC:
           except Exception as e:
                print("excepted", e)
                print("did not set anything")
-
      def SET_V(self,val):
+          self._check_input_int(val)
           self.rawNumber=max(min(self.maximum,val),0);
           self._conform()
      def SHIFT_UP(self,val):
           last = self.rawNumber
-          if(isinstance(val,int)):
+          if(self._check_input_int(val)):
                if(val>0):
                     try: self.rawNumber=self.rawNumber<<val
                     except: self.rawNumber=last
                else:
                     print(val)
                     raise Exception("negative input not allowed")
-          else:
-               raise Exception("bad input: use integers")
           if(self.rawNumber<0):
                self.rawNumber=0
           if(self.rawNumber>self.GET_MAX()):
@@ -215,20 +238,20 @@ class BC:
           self._conform()
      def SHIFT_DOWN(self,val):
           last = self.rawNumber
-          if(isinstance(val,int)):
+          if(self._check_input_int(val)):
                if(val>0):
                     try: self.rawNumber=self.rawNumber>>val
                     except: self.rawNumber=last
                else:
                     raise Exception("negative input not allowed")
-          else:
-               raise Exception("bad input: use integers")
           if(self.rawNumber<0):
                self.rawNumber=0
           if(self.rawNumber>self.GET_MAX()):
                self.rawNumber=self.GET_MAX()
           self._conform()
      def SHIFT_CIRCLE(self,amount,bGoForward):
+          self._check_input_int(amount)
+          self._check_input_bool(bGoForward)
           if(bGoForward):
                for i in range(amount):
                     bit = self.binary.pop()
@@ -239,27 +262,34 @@ class BC:
                     self.binary.append(bit)
           self._conformRaw()
      def COUNT(self, willCountOnes):
+          self._check_input_bool(willCountOnes)
           c=0
           if(willCountOnes):  c = self.binary.count(1)
           else:               c = self.binary.count(0)
           return c
      def KEEP_ODD(self,increaseBool):
+          self._check_input_bool(increaseBool)
           if(self.binary[len(self.binary)-1]!=1):
                if(increaseBool):   self.INCREASE(1)
                else:               self.DECREASE(1)
      def KEEP_EVEN(self,increaseBool):
+          self._check_input_bool(increaseBool)
           if(self.binary[len(self.binary)-1]!=0):
                if(increaseBool):   self.INCREASE(1)
                else:               self.DECREASE(1)
      def SORT_B(self,bFromSignificantDigit):
+          self._check_input_bool(bFromSignificantDigit)
           if(bFromSignificantDigit):
                self.binary.sort(reverse=True)
           else:
                self.binary.sort()
           self._conformRaw()
      def SECTION(self,start,stop):
+          self._check_input_int(start)
+          self._check_input_int(stop)
           return self.binary[start:stop]
      def SPAWN(self,start,stop):
+          #no need to check first, section has a check built in
           section = self.SECTION(start,stop);
           sB = self.B_TO_I(section);
           l=len(section)
@@ -268,65 +298,3 @@ class BC:
           return self.maximum
      def SIZE(self):
           return len(self.binary)
-if(__name__ == "__main__"):
-     #tests
-     class TestBinaryCounter:
-          def test_1_overflow(self):
-               for i in range(1_000):
-                    bin=BC(i,i)
-                    bin.SET_V(bin.GET_MAX())
-                    a=bin.VAL()
-                    bin.INCREASE(1)
-                    assert a==bin.VAL()
-          def test_2_overflow_infinity(self):
-               for i in range(1_000):
-                    bin=BC(i,i)
-                    bin.SET_V(bin.GET_MAX())
-                    a=bin.VAL()
-                    bin.INCREASE(float('inf'))
-                    assert a==bin.VAL()
-          def test_3_overflow_negative(self):
-               for i in range(1_000):
-                    bin = BC(0,i)
-                    bin.DECREASE(i)
-                    assert bin.VAL()==0
-          def test_4_overflow_negative_infinity(self):
-               for i in range(1_000):
-                    bin = BC(0,i)
-                    bin.DECREASE(float('inf'))
-                    assert bin.VAL()==0
-          def test_5_bad_input_text(self):
-               stringNumbers = ["1","2","3","4","5","6","7","8","9","10","-1","-20","-0.311111","-.343,fa","hello world","three","THREE","0",""]
-               for i in range(1_000):
-                    bin=BC(stringNumbers[(i%len(stringNumbers))],i)
-                    assert bin.VAL()==0;
-          def test_6_method_COUNT(self):
-               bin1=BC(15,6)
-               bin2=BC(15,12)
-               bin3=BC(31,8)
-               bin4=BC(63,16)
-               assert bin1.COUNT(True)==4
-               assert bin1.COUNT(False)==2
-               assert bin2.COUNT(True)==4
-               assert bin2.COUNT(False)==8
-               assert bin3.COUNT(True)==5
-               assert bin3.COUNT(False)==3
-               assert bin4.COUNT(True)==6
-               assert bin4.COUNT(False)==10
-          def test_7_method_VAL(self):
-               for i in range(1_000):
-                    x = int(round(random.random()*1000))
-                    bin = BC(x*i,i+10);
-                    assert bin.VAL() == (x*i)
-
-
-     t = TestBinaryCounter()
-     print("testing");
-     t.test_1_overflow()
-     t.test_2_overflow_infinity()
-     t.test_3_overflow_negative()
-     t.test_4_overflow_negative_infinity()
-     t.test_5_bad_input_text()
-     t.test_6_method_COUNT()
-     t.test_7_method_VAL()
-     print("tested:YAY!")
