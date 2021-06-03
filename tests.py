@@ -25,11 +25,13 @@ class TestBinaryCounter:
                assert a==bin.VAL()
      def test_2_overflow_infinity(self):
           for i in range(100):
-               bin=BC(i,i)
-               bin.SET_V(bin.GET_MAX())
-               a=bin.VAL()
-               bin.INCREASE(float('inf'))
-               assert a==bin.VAL()
+               bin1=BC(i,i)
+               bin1.SET_V(bin1.GET_MAX())
+               a=bin1.VAL()
+               with pytest.raises(Exception) as exc:
+                    bin1.INCREASE(float('inf'))
+               assert "bad input" in str(exc.value)
+          assert a==bin1.VAL()
      def test_3_overflow_negative(self):
           for i in range(100):
                bin = BC(0,i)
@@ -37,15 +39,14 @@ class TestBinaryCounter:
                assert bin.VAL()==0
      def test_4_overflow_negative_infinity(self):
           for i in range(100):
-               bin = BC(0,i)
-               bin.DECREASE(float('inf'))
-               assert bin.VAL()==0
-     def test_5_bad_input_text(self):
-          stringNumbers = ["1","2","3","4","5","6","7","8","9","10","-1","-20","-0.311111","-.343,fa","hello world","three","THREE","0",""]
-          for i in range(100):
-               bin=BC(stringNumbers[(i%len(stringNumbers))],i)
-               print(bin.VAL())
-               assert bin.VAL()==0;
+               bin1 = BC(0,i)
+               a=bin1.VAL()
+               with pytest.raises(Exception) as exc:
+                         bin1.DECREASE(float('inf'))
+          assert "bad input" in str(exc.value)
+          assert a==bin1.VAL()
+     def test_5_method_VAL_bad_inputs(self):
+          pass
      def test_6_method_COUNT(self):
           bin1=BC(15,6)
           bin2=BC(15,12)
@@ -59,6 +60,18 @@ class TestBinaryCounter:
           assert bin3.COUNT(False)==3
           assert bin4.COUNT(True)==6
           assert bin4.COUNT(False)==10
+          with pytest.raises(Exception) as exc:
+               bin4.COUNT(1)
+          assert "bad input" in str(exc.value)
+          with pytest.raises(Exception) as exc:
+               bin4.COUNT("")
+          assert "bad input" in str(exc.value)
+          with pytest.raises(Exception) as exc:
+               bin4.COUNT("1")
+          assert "bad input" in str(exc.value)
+          with pytest.raises(Exception) as exc:
+               bin4.COUNT({"1":"o"})
+          assert "bad input" in str(exc.value)
      def test_7_method_VAL(self):
           for i in range(1_000):
                x = int(round(random.random()*1000))
@@ -86,6 +99,9 @@ class TestBinaryCounter:
           assert bin4.VAL()==64512
           bin4.SORT_B(False)
           assert bin4.VAL()==63
+          with pytest.raises(Exception) as exc:
+               bin4.SORT_B({"1":"o"})
+          assert "bad input" in str(exc.value)
      def test_9_method_SET_BIT(self):
           bin1=BC(0,10)
           for i in range(bin1._length()):
@@ -99,6 +115,10 @@ class TestBinaryCounter:
                     bin1.SET_BIT(1,i)
           assert bin1.COUNT(True)==5
           assert bin1.COUNT(False)==5
+          with pytest.raises(Exception) as exc:
+               bin1.COUNT({"1":"o"})
+          assert "bad input" in str(exc.value)
+
      def test_10_method_INCREASE(self):
           bin1=BC(0,10)
           c = 0
@@ -106,6 +126,12 @@ class TestBinaryCounter:
                bin1.INCREASE(i)
                c = c + i
           assert bin1.VAL()==c
+          with pytest.raises(Exception) as exc:
+               bin1.INCREASE({"1":"o"})
+          assert "bad input" in str(exc.value)
+          with pytest.raises(Exception) as exc:
+               bin1.INCREASE("")
+          assert "bad input" in str(exc.value)      
      def test_11_method_DECREASE(self):
           bin1=BC(90,10)
           c = 90
@@ -113,6 +139,12 @@ class TestBinaryCounter:
                bin1.DECREASE(i)
                c = c - i
           assert bin1.VAL()==c
+          with pytest.raises(Exception) as exc:
+               bin1.DECREASE({"1":"o"})
+          assert "bad input" in str(exc.value)
+          with pytest.raises(Exception) as exc:
+               bin1.DECREASE("")
+          assert "bad input" in str(exc.value)     
      def test_12_method_DECREASE_MIN_ZERO(self):
           bin1 = BC(90,10)
           c=90
@@ -126,6 +158,9 @@ class TestBinaryCounter:
           c=120
           bin1.SET_V(c)
           assert bin1.VAL()==c
+          with pytest.raises(Exception) as exc:
+               bin1.SET_V("")
+          assert "bad input" in str(exc.value)
      def test_14_method_SET_V_Negative(self):
           bin1=BC(90,10)
           c=-120
@@ -145,36 +180,32 @@ class TestBinaryCounter:
           with pytest.raises(Exception) as exc:
                bc1.SHIFT_DOWN(posTest3)
           assert "negative input not allowed" in str(exc.value)
-         
           with pytest.raises(Exception) as exc:
                bc1.SHIFT_UP(posTest4)
-          assert "bad input: use integers" in str(exc.value)
+          assert "bad input" in str(exc.value)
           with pytest.raises(Exception) as exc:
                bc1.SHIFT_UP(posTest5)
-          assert "bad input: use integers" in str(exc.value)
+          assert "bad input" in str(exc.value)
      def test_16_method_SHIFT_DOWN(self):
           posTest1 = 1
           posTest2=40
           posTest3=-5
           posTest4="4"
-          posTest5=[0,0]
-                  
+          posTest5=[0,0]    
           bc1=BC(63,10)     
           bc1.SHIFT_DOWN(posTest1)
           assert bc1.VAL()==31   
-          
           bc1.SHIFT_DOWN(posTest2)
           assert bc1.VAL()==0  
-          
           with pytest.raises(Exception) as exc:
                bc1.SHIFT_DOWN(posTest3)
           assert "negative input not allowed" in str(exc.value)
           with pytest.raises(Exception) as exc:
                bc1.SHIFT_DOWN(posTest4)
-          assert "bad input: use integers" in str(exc.value)
+          assert "bad input" in str(exc.value)
           with pytest.raises(Exception) as exc:
                bc1.SHIFT_DOWN(posTest5)
-          assert "bad input: use integers" in str(exc.value)
+          assert "bad input" in str(exc.value)
      def test_17_method_SHIFT_CIRCLE(self):
           bc1=BC(15,10)
           bc1.SHIFT_CIRCLE(1,True)
@@ -184,6 +215,13 @@ class TestBinaryCounter:
           bc1.SHIFT_CIRCLE(4,False)
           print(bc1.VAL())
           assert bc1.VAL()==240
+          with pytest.raises(Exception) as exc:
+               bc1.SHIFT_CIRCLE(29,"")
+          assert "bad input" in str(exc.value)
+          print(exc.value, "negative inputs?")
+          with pytest.raises(Exception) as exc:
+               bc1.SHIFT_CIRCLE("vvd",1)
+          assert "bad input" in str(exc.value)
      def test_18_method_READ(self):
           bc1=BC(10,10);
           assert  bc1.READ() ==(f'binary:{bc1.binary} value:{bc1.rawNumber}\n')
@@ -193,7 +231,10 @@ class TestBinaryCounter:
           assert bc1.VAL()==1
           bc1.INCREASE(1)          
           bc1.KEEP_ODD(True)
-          assert bc1.VAL()==3          
+          assert bc1.VAL()==3
+          with pytest.raises(Exception) as exc:
+               bc1.KEEP_ODD("")
+          assert "bad input" in str(exc.value) 
      def test_20_method_KEEP_EVEN(self):
           bc1 = BC(3,10)
           bc1.KEEP_EVEN(False)
@@ -201,6 +242,9 @@ class TestBinaryCounter:
           bc1.INCREASE(1)
           bc1.KEEP_EVEN(True)
           assert bc1.VAL()==4         
+          with pytest.raises(Exception) as exc:
+               bc1.KEEP_EVEN("")
+          assert "bad input" in str(exc.value)
      def test_21_method_SORT_B(self):
           bc1= BC(15,10)
           assert bc1.VAL()==15
@@ -296,3 +340,14 @@ class TestBinaryCounter:
           assert results[4]==[1,1,1,1,0,0,0,1,0,1]
           assert results[5]==[1,1,1,1,0,1,1,0,1,0]
           assert results[6]==[0,0,0,0,0,0,0,1,0,1]
+          bc1=BC(58,10)
+          bc2=BC(992,10)
+          with pytest.raises(Exception) as exc:
+
+               bc1.BIT_OP({"1":"o"},ops[0])
+          print(str(exc.value),"is error")
+          assert "bad input" in str(exc.value)
+
+          with pytest.raises(Exception) as exc:
+               bc1.BIT_OP(bc2,"not a operation")
+          assert "unknown operation" in str(exc.value)
